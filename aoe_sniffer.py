@@ -65,7 +65,7 @@ class AoeSniffer(object):
         self.__capture_thread.start()
 
     def __capture_func(self):
-        capture = pyshark.LiveCapture(interface='wlxec086b17c65f')
+        capture = pyshark.LiveCapture(interface=self.__interface)
         for packet in capture.sniff_continuously():
             if (datetime.datetime.now() - self.__last_check).seconds > SECONDS_TO_TRIGGER_BAN:
                 self.__last_check = datetime.datetime.now()
@@ -94,7 +94,8 @@ class AoeSniffer(object):
                     remote_ip = packet.ip.dst
                     remote_country = packet.ip.geodst_country
                     if "data" in packet and packet.data.data == "beefface":
-                        # Hey, I kicked someone. If I kick someone enough times in less than a certain time, I should ban him
+                        # Hey, I kicked someone. If I kick someone enough times in less than a certain time, I should
+                        # ban him
 
                         if self.__player_disconected__(remote_ip, remote_country):
                             if remote_ip not in self.__potentially_banned_ips:
